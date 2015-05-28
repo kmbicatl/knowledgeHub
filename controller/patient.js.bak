@@ -1,0 +1,10 @@
+
+	
+	function processReq(oQuery,callback){
+		resObj = {
+			message:'Getting Patient Details'
+		}
+		callback(resObj);
+	}
+
+module.exports.processReq = processReq;

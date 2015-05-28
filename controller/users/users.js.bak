@@ -1,0 +1,98 @@
+var mongoose			= require('mongoose');
+var uniqueValidator		= require('mongoose-unique-validator');
+var mongooseTypes		= require("mongoose-types");
+mongooseTypes.loadTypes(mongoose, "email");
+
+var Schema = mongoose.Schema;  
+
+
+
+var Schema = mongoose.Schema;  
+// User
+var User = new Schema({
+    userId: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+	secret: {
+        type: String,
+        required: true
+    },
+    firstName: {
+        type: String,
+		required:true
+    },
+    lastName: {
+        type: String,
+		required:true
+    },
+	emailId:{
+		type:String,
+		unique: true,
+		required:true
+	},
+	clientId:{
+	    type: String,
+        required: true
+	},
+	roleId:{
+	    type: []
+	},
+	created: {
+        type: Date,
+        default: Date.now
+    }
+},
+{
+	collection:'user'
+});
+
+User.plugin(uniqueValidator)
+
+var UserModel = mongoose.model('Users', User);
+
+function save(oUser,callback){
+	oUser.userId = 	crypto.randomBytes(64).toString('base64');
+	oUser.secret = 	crypto.randomBytes(64).toString('base64');
+	oUser.password = 	crypto.randomBytes(64).toString('base64');
+	var user = new UserModel(oUser);
+	user.save(function (err) {
+	  if (err){ 
+		  callback({error:err,message:'Failure'});
+	  } else {
+		  callback({userId:oUser.userId,message:'Success'});
+	  }
+	  // User Added!
+	});
+}
+
+function update(oUserRoles,callback){
+	UserModel.update(oUserRoles.query,{$set:oUserRoles.set},{upsert:true},function (err) {
+		if (err){ 
+			callback({error:err,message:'Failure'});
+		} else {
+			callback({userId:oUserRoles.userId,roleId:oUserRoles.roleId,message:'Success'});
+		}
+		// RoleProducts Updated/Added!
+	});
+}
+
+function find(oQuery,callback){
+	UserModel.find(oQuery,function (err,user) {
+	  if (err){ 
+		callback({error:err,message:'Failure'});
+	  } else {
+		callback({list:user,message:'Success'});
+	  }
+	  // User Records Fetched!
+	});
+}
+
+module.exports.save = save;
+module.exports.update = update;
+module.exports.find = find;

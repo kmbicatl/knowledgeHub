@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE> Post Data </TITLE>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+	<script>
+	var myToken = '';
+
+		angular.module('formApp', [])
+		.controller('formPostData', [ '$scope','$http' ,function($scope,$http) {
+			$scope.saveData=function(){
+				$.ajax({url:'/saveData',data:$scope.formData})
+				.always(function(data){
+						data = JSON.parse(data);
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}
+
+			$scope.getData=function(){
+				$.ajax({url:'/getData',data:$scope.formData})
+				.always(function(data){
+				
+						data = {list:[{ _id: '5493b84277fc57501a114aa5',
+  data: {firstName:'Sridhar'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 21:31:46 GMT-0800 (Pacific Standard Time)' },{ _id: '5493b8cfdd0c05b8340cc0c2',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 21:34:07 GMT-0800 (Pacific Standard Time)' },{ _id: '5493b91aea5e8c382917c992',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 21:35:22 GMT-0800 (Pacific Standard Time)' },{ _id: '5493bc63a3b153d42eaad0db',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 21:49:23 GMT-0800 (Pacific Standard Time)' },{ _id: '5493bf905faeb0c41fd4a381',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 22:02:56 GMT-0800 (Pacific Standard Time)' },{ _id: '5493bfbbb7dfe9f809b7e079',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 22:03:39 GMT-0800 (Pacific Standard Time)' },{ _id: '5493c0834e06f2b437bd238f',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 22:06:59 GMT-0800 (Pacific Standard Time)' },{ _id: '5493c0b6a83fa1e430b28301',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 22:07:50 GMT-0800 (Pacific Standard Time)' },{ _id: '5493c0e5bc816bfc331e76e1',
+  data: {firstName:'Sridhar'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 22:08:37 GMT-0800 (Pacific Standard Time)' },{ _id: '5493d711c6c88640224351f2',
+  data: {lastName:'Gudimela'},
+  __v: 0,
+  created: 'Thu Dec 18 2014 23:43:13 GMT-0800 (Pacific Standard Time)' }]};	
+
+  window.lastData = data;
+						//data = jQuery.parseJSON(data);
+					
+							var myStr = {};
+							var ids = [];
+							var testAPIRec = '';
+							for(talI=0;talI<data.list.length;talI++){
+								//data['list'][0].collectionRec[talI] = jQuery.parseJSON(data['list'][0].collectionRec[talI]);
+								testAPIRec = data.list[talI].data;
+								for(_id in testAPIRec){
+									if(myStr[_id]){
+										myStr[_id][myStr[_id].length]  = testAPIRec[_id];
+									} else {
+										ids[ids.length] = _id;
+										myStr[_id] = new Array();
+										myStr[_id][myStr[_id].length]  = testAPIRec[_id];
+									}
+								}
+							}			
+							
+							var optStr = '';
+							for(talI=0;talI<ids.length;talI++){
+								optStr += '<div class="row"><select id="sel'+ids[talI]+'" onchange="setFacetFilter()" style="width:200px" class="form-control">'
+								optStr += '<option value="" selected>'+ids[talI]+'</option>';
+								for(talJ=0;talJ<myStr[ids[talI]].length;talJ++){
+									optStr += '<option value="'+myStr[ids[talI]][talJ]+'">'+myStr[ids[talI]][talJ]+'</option>';
+								}
+								optStr += '</select></div>';
+							}
+							$('#bdy1').html('<div class="row"><div class="col-lg-3" style="margin-left:20px">'+optStr+'</div><div class="col-lg-8"><pre id="preFacetFilterResult"></pre></div></div>');
+							optStr = '';
+							testAPIRec = '';
+							myStr = {};
+							ids = [];
+							//$('#tabFacets').find($('SELECT')).chosen();
+
+
+
+
+						//$('#bdy1').html(JSON.stringify(data));
+					}
+				)
+			}
+
+		}]).controller('formController', [ '$scope','$http' ,function($scope,$http) {
+			$scope.getToken=function(){
+				$.ajax({url:'/saveData',data:$scope.formData})
+				.always(function(data){
+				data = JSON.parse(data);
+						$('#bdy').html(JSON.stringify(data));
+						myToken = data.token;
+					}
+				)
+			}
+
+			/*$scope.getPatient=function(){
+				mydata = {token:myToken};
+				$.ajax({url:'/getPatient',data:mydata})
+				.always(function(data){
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}*/
+
+			$scope.getPatient=function(){
+				mydata = {token:myToken,module:'/getPatient'};
+				$.ajax({url:'/api',data:mydata})
+				.always(function(data){
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}
+
+
+			$scope.getInfo=function(){
+				mydata = {token:myToken,module:'/getInfo'};
+				$.ajax({url:'/api',data:mydata})
+				.always(function(data){
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}
+
+		}]);
+
+	function setFacetFilter(){
+		var facetFilterRec = {};
+		$('#preFacetFilterResult').html('');
+		$('#tabFacets').find($('SELECT')).each(function(){
+			if($(this).val() != ''){
+				facetFilterRec[$(this).attr('id').replace('sel','')] = $(this).val();
+			}
+		});
+		var isRecMatch = false;
+		for (ffI=0,ffJ=1;ffI<window.lastData.list.length;ffI++ ){
+				for(_id in facetFilterRec){
+					isRecMatch = true;
+					alert('facetFilterRec['+_id+'] : '+facetFilterRec[_id]+'\n'+);
+					if(facetFilterRec[_id] != window.lastData.list[ffI].data[_id]){
+						isRecMatch = false;
+						break;
+					}
+				}
+				if(isRecMatch){
+					$('#preFacetFilterResult').append('<strong><u>Rec '+ffJ+' :</strong></u><br/>');
+					ffJ++;
+					$('#preFacetFilterResult').append(JSON.stringify(_win.lastData[ffI],null,'\n\t').replace(/\"/g,'"')+'<br/>');
+				}
+		}
+		facetFilterRec = '';
+	}
+
+	</script>
+</HEAD>
+ <BODY ng-app="formApp">
+	<div id="bdy"></div>
+	Post Data
+	<div  ng-controller="formController">
+		<form action="http://localhost:3000/api">
+			<input type="text" ng-model="formData.clientId"  placeHolder="Client Id" /><br/>
+			<input type="text" ng-model="formData.emailId" placeHolder="User Id" /><br/>
+			<input type="password" ng-model="formData.password"  placeHolder="Password" /><br/>
+
+			<input type="button" value="Submit" ng-click="getToken()">
+			<input type="button" value="Get Patient" ng-click="getPatient()">
+			<input type="button" value="Get Info" ng-click="getInfo()">
+		</form>
+	</div>
+	<div  ng-controller="formPostData">
+		<form action="http://localhost:3001/saveData">
+			<input type="text" ng-model="formData.token"  placeHolder="Token" /><br/>
+			<input type="text" ng-model="formData.collectionName" placeHolder="Collection Name" /><br/>
+			<textarea type="password" ng-model="formData.data"  placeHolder="Data" style="width:100%;height:50%"></textarea><br/>
+
+			<input type="button" value="Submit" ng-click="saveData()">
+			<input type="button" value="Get Data" ng-click="getData()">
+		</form>
+	</div>
+	<div id="bdy1"></div>
+ </BODY>
+	<script>
+		$(function(){
+			/*$.ajax({url:'http://localhost:8899/get'}).always(function(data){
+				jQuery("#tblGrid")[0].addJSONData(jQuery.parseJSON(data));
+				$('#myJson').html(data);
+			});*/
+			/*$.post('http://localhost:8899/get?emp=1586',{emp:"1585",gender:"Male"}).always(function(data){
+				jQuery("#tblGrid")[0].addJSONData(jQuery.parseJSON(data));
+			});
+			$.ajax(
+				{
+					url:"http://localhost:3000/api", 
+					data:"userId=T-shirt&pwd=1234"
+				}
+			).always(function (data, textStatus, jqXHR) { 
+				$('#bdy').html(JSON.stringify(data)+'<br>textStatus : '+textStatus+'<br>jqXHR : '+jqXHR);
+				console.log("Post resposne:"); console.dir(data); console.log(textStatus); console.dir(jqXHR); 
+			});*/
+		});
+	</script>
+</HTML>

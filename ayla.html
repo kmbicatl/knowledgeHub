@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE> Customer Form </TITLE>
+	<link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="assets/plugins/switch/static/stylesheets/bootstrap-switch.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/theme.css" />
+    <link rel="stylesheet" href="assets/css/MoneAdmin.css" />
+    <link rel="stylesheet" href="assets/plugins/Font-Awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="assets/plugins/magic/magic.css" />
+
+    <!--END GLOBAL STYLES -->
+
+    <!-- PAGE LEVEL STYLES -->
+     <link rel="stylesheet" href="assets/plugins/validationengine/css/validationEngine.jquery.css" />
+     <link href="assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+	 <link rel="stylesheet" href="assets/plugins/chosen/chosen.min.css" />
+
+	<link href="assets/plugins/flot/examples/examples.css" rel="stylesheet" />
+	<style>
+		.ForMargin {
+			margin:5px;
+		}
+	</style>
+	    <script src="assets/plugins/jquery-2.0.3.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/plugins/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+	<script>
+		function setBlueLed(){
+			myData = {"datapoint":{"value":1}};
+			$.ajax({url:'https://ads-dev.aylanetworks.com/apiv1/devices.json',method:'GET',
+				beforeSend : function(xhr) {
+			      // generate base 64 string from username + password
+			      //var bytes = Crypto.charenc.Binary.stringToBytes(username + ":" + password);
+			      //var base64 = Crypto.util.bytesToBase64(bytes);
+			      // set header
+			      //xhr.setRequestHeader("Authorization", "Basic " + base64);
+			      token = '7fb3d888a5f44d19b611bfbe170a873b';
+			      xhr.setRequestHeader("Authorization", "auth_token " + token);
+			   },
+			   xhrFields: {
+			    // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
+			    // This can be used to set the 'withCredentials' property.
+			    // Set the value to 'true' if you'd like to pass cookies to the server.
+			    // If this is enabled, your server must respond with the header
+			    // 'Access-Control-Allow-Credentials: true'.
+			    withCredentials: false
+			  },
+			   data:myData
+			});
+		}
+		function getToken(){
+		$.ajax({url:'/external?mode=patientSearch',data:$('#formToken').serialize()})
+				.always(function(data){
+				data = JSON.parse(data);
+						$('#bdy').html('<h2>'+JSON.stringify(data,null,'\n\t')+'</h2>');
+						myToken = data.token;
+					}
+				)	
+		}
+		function submitForm(){
+			console.log($('#formCustForm').serialize());
+			console.log('>>>>>>'+new FormData($('#formCustForm')));					
+			$.ajax({url:'/save',data:$('#formCustForm').serialize(),cache:false,contentType:false,processData:false,method:'post'}).always(function(data){
+				console.log('data : '+JSON.stringify(data));
+			});
+		}
+	</script>
+</HEAD>
+ <BODY ng-app="formApp">
+	<input type="button" class="btn btn-primary" value="Blue Led" onclick="setBlueLed()">
+ </BODY>
+</HTML>

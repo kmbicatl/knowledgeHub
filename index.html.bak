@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE> Index </TITLE>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+	<script>
+	var myToken = '';
+		angular.module('formApp', [])
+		.controller('formController', [ '$scope','$http' ,function($scope,$http) {
+			$scope.getToken=function(){
+				$.ajax({url:'/oauth',data:$scope.formData})
+				.always(function(data){
+				data = JSON.parse(data);
+						$('#bdy').html(JSON.stringify(data));
+						myToken = data.token;
+					}
+				)
+			}
+
+			/*$scope.getPatient=function(){
+				mydata = {token:myToken};
+				$.ajax({url:'/getPatient',data:mydata})
+				.always(function(data){
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}*/
+
+			$scope.getPatient=function(){
+				mydata = {token:myToken,module:'/getPatient'};
+				$.ajax({url:'/api',data:mydata})
+				.always(function(data){
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}
+
+
+			$scope.getInfo=function(){
+				mydata = {token:myToken,module:'/getInfo'};
+				$.ajax({url:'/api',data:mydata})
+				.always(function(data){
+						$('#bdy').html(JSON.stringify(data));
+					}
+				)
+			}
+
+		}]);
+	</script>
+</HEAD>
+ <BODY ng-app="formApp" ng-controller="formController">
+	<div id="bdy"></div>
+	<form action="http://localhost:3000/api">
+		<input type="text" ng-model="formData.clientId"  placeHolder="Client Id" /><br/>
+		<input type="text" ng-model="formData.userId" placeHolder="User Id" /><br/>
+		<input type="password" ng-model="formData.password"  placeHolder="Password" /><br/>
+
+		<input type="button" value="submit" ng-click="getToken()">
+		<input type="button" value="Get Patient" ng-click="getPatient()">
+		<input type="button" value="Get Info" ng-click="getInfo()">
+	</form>
+ </BODY>
+	<script>
+		$(function(){
+			/*$.ajax({url:'http://localhost:8899/get'}).always(function(data){
+				jQuery("#tblGrid")[0].addJSONData(jQuery.parseJSON(data));
+				$('#myJson').html(data);
+			});*/
+			/*$.post('http://localhost:8899/get?emp=1586',{emp:"1585",gender:"Male"}).always(function(data){
+				jQuery("#tblGrid")[0].addJSONData(jQuery.parseJSON(data));
+			});
+			$.ajax(
+				{
+					url:"http://localhost:3000/api", 
+					data:"userId=T-shirt&pwd=1234"
+				}
+			).always(function (data, textStatus, jqXHR) { 
+				$('#bdy').html(JSON.stringify(data)+'<br>textStatus : '+textStatus+'<br>jqXHR : '+jqXHR);
+				console.log("Post resposne:"); console.dir(data); console.log(textStatus); console.dir(jqXHR); 
+			});*/
+		});
+	</script>
+</HTML>
